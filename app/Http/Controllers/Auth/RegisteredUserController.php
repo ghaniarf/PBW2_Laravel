@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
@@ -28,18 +27,32 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+
+    
+    public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'username' => ['required', 'string', 'max:100','unique:users'],
+            'fullname' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'address' => ['required', 'string', 'max:1000'],
+            'birthdate' => ['required', 'date'],
+            'phoneNumber' => ['required', 'string', 'max:20'],
+            'religion' => ['required', 'string', 'max:20'],
+            'gender' => ['required', 'integer', 'max:4'],
         ]);
 
         $user = User::create([
-            'name' => $request->name,
+            'username' => $request->username,
+            'fullname' => $request->fullname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'address' => $request->address,
+            'birthdate' => $request->birthdate,
+            'phoneNumber' => $request->phoneNumber,
+            'religion' => $request->religion,
+            'gender' => $request->gender,
         ]);
 
         event(new Registered($user));
